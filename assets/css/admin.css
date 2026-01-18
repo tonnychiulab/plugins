@@ -1,0 +1,91 @@
+/* Cards */
+.mtdss-card {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+/* Tabs */
+.mtdss-tab-content {
+    display: none;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #c3c4c7;
+    border-top: none;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.mtdss-tab-content.active {
+    display: block;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 0;
+    margin-top: 20px;
+}
+
+.nav-tab:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+/* Internal Scrolling for Large Files */
+.mtdss-table-scroll {
+    max-height: 600px;
+    overflow-y: auto;
+    border: 1px solid #c3c4c7;
+}
+
+/* Progress Bar */
+.mtdss-progress-container {
+    background: #f0f0f1;
+    border-radius: 4px;
+    height: 30px;
+    width: 100%;
+    margin: 20px 0;
+    border: 1px solid #c3c4c7;
+    overflow: hidden;
+}
+
+.mtdss-progress-bar {
+    height: 100%;
+    line-height: 30px;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    transition: width 0.5s ease;
+}
+
+/* Utilities */
+.mtdss-table {
+    border: none;
+}
+
+.mtdss-description {
+    margin-top: 20px;
+}
+
+/* Text Colors */
+.mtdss-text-success {
+    color: #46b450;
+    font-weight: bold;
+}
+
+.mtdss-text-warning {
+    color: #d63638;
+    font-weight: bold;
+}
+
+.mtdss-text-primary {
+    color: #2271b1;
+    font-weight: bold;
+}
+
+/* Backgrounds */
+.mtdss-bg-warning {
+    background-color: #d63638;
+}
+
+.mtdss-bg-primary {
+    background-color: #2271b1;
+}
