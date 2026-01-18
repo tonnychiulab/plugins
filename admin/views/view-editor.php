@@ -76,12 +76,12 @@ $base_url = admin_url( 'admin.php?page=my-tiny-stats&view_mode=editor' );
             <!-- LARGE FILES TAB -->
             <?php if ( $active_tab === 'files' ) : ?>
                 <div style="margin-bottom: 20px;">
-                    <span style="color: #6a9955;">// Config: Show Top <?php echo $file_limit; ?> Files > <?php echo $min_size; ?>MB</span><br>
+                    <span style="color: #6a9955;">// Config: Show Top <?php echo esc_html( $file_limit ); ?> Files > <?php echo esc_html( $min_size ); ?>MB</span><br>
                     <span style="color: #569cd6;">const</span> <span style="color: #4fc1ff;">largeFiles</span> = [
                 </div>
                 <?php foreach ( $scan_results['large_files'] ?? [] as $f ) : ?>
                 <div style="padding-left: 20px;">
-                    { <span style="color: #9cdcfe;">name</span>: <span style="color: #ce9178;">"<?php echo esc_html( $f['name'] ); ?>"</span>, <span style="color: #9cdcfe;">size</span>: <span style="color: #b5cea8;"><?php echo size_format( $f['size'] ); ?></span>, <span style="color: #9cdcfe;">path</span>: <span style="color: #ce9178;">"<?php echo esc_html( $f['path'] ); ?>"</span> },
+                    { <span style="color: #9cdcfe;">name</span>: <span style="color: #ce9178;">"<?php echo esc_html( $f['name'] ); ?>"</span>, <span style="color: #9cdcfe;">size</span>: <span style="color: #b5cea8;"><?php echo esc_html( size_format( $f['size'] ) ); ?></span>, <span style="color: #9cdcfe;">path</span>: <span style="color: #ce9178;">"<?php echo esc_html( $f['path'] ); ?>"</span> },
                 </div>
                 <?php endforeach; ?>
                 <div style="margin-top: 10px;">];</div>
@@ -89,7 +89,7 @@ $base_url = admin_url( 'admin.php?page=my-tiny-stats&view_mode=editor' );
             <!-- RECENT TAB -->
             <?php elseif ( $active_tab === 'recent' ) : ?>
                 <div style="margin-bottom: 20px;">
-                    <span style="color: #6a9955;">// Recent Changes (Last <?php echo $recent_days; ?> Days)</span><br>
+                    <span style="color: #6a9955;">// Recent Changes (Last <?php echo esc_html( $recent_days ); ?> Days)</span><br>
                     <span style="color: #c586c0;">tail</span> -f /var/log/recent_changes.log
                 </div>
                 <?php 
@@ -98,7 +98,7 @@ $base_url = admin_url( 'admin.php?page=my-tiny-stats&view_mode=editor' );
                     echo '<div style="color: #808080;">No changes detected.</div>';
                 } else {
                     foreach ( array_slice( $recent_files, 0, 50 ) as $f ) {
-                        echo '<div><span style="color: #569cd6;">' . date( 'Y-m-d H:i:s', $f['date'] ) . '</span> - ' . esc_html( $f['name'] ) . ' <span style="color: #6a9955;">' . size_format( $f['size'] ) . '</span></div>';
+                        echo '<div><span style="color: #569cd6;">' . esc_html( date_i18n( 'Y-m-d H:i:s', $f['date'] ) ) . '</span> - ' . esc_html( $f['name'] ) . ' <span style="color: #6a9955;">' . esc_html( size_format( $f['size'] ) ) . '</span></div>';
                     }
                 }
                 ?>
@@ -131,7 +131,7 @@ $base_url = admin_url( 'admin.php?page=my-tiny-stats&view_mode=editor' );
                 <?php foreach ( $db_stats as $t ) : ?>
                     <tr>
                         <td style="color: #9cdcfe;"><?php echo esc_html( $t['name'] ); ?></td>
-                        <td style="color: #b5cea8;"><?php echo size_format( $t['size'] ); ?></td>
+                        <td style="color: #b5cea8;"><?php echo esc_html( size_format( $t['size'] ) ); ?></td>
                         <td style="color: #ce9178;"><?php echo number_format( $t['rows'] ); ?> rows</td>
                     </tr>
                 <?php endforeach; ?>

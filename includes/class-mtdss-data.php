@@ -225,6 +225,7 @@ class MTDSS_Data {
                         foreach( $keywords as $kw ) {
                             if ( stripos( $content, $kw ) !== false ) {
                                  $is_suspicious = true;
+                                 /* translators: %s: Suspicious keyword found */
                                  $reason = sprintf( __( 'Suspicious Content (%s)', 'my-tiny-stats' ), $kw );
                                  break;
                             }

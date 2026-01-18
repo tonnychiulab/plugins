@@ -52,7 +52,7 @@ $load_text = $cpu ? implode( ' / ', $cpu ) : 'N/A';
             <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:13px;">
                 <span>💾 <strong>Disk Space</strong>:</span>
                 <?php if ( $disk ) : ?>
-                <span><?php echo size_format( $disk['free'] ); ?> free / <?php echo size_format( $disk['total'] ); ?> total</span>
+                <span><?php echo esc_html( size_format( $disk['free'] ) ); ?> free / <?php echo esc_html( size_format( $disk['total'] ) ); ?> total</span>
                 <?php else: ?>
                 <span>Unknown</span>
                 <?php endif; ?>

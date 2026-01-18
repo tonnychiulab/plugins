@@ -64,13 +64,7 @@ function mtdss_activate() {
 }
 register_activation_hook( __FILE__, 'mtdss_activate' );
 
-/**
- * Load Text Domain
- */
-function mtdss_load_textdomain() {
-    load_plugin_textdomain( 'my-tiny-stats', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-}
-add_action( 'plugins_loaded', 'mtdss_load_textdomain' );
+
 
 // Legacy File Retirement Note:
 // includes/mtdss-core.php is no longer loaded.

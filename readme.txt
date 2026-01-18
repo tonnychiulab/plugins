@@ -3,7 +3,7 @@ Contributors: Tonny
 Tags: disk space, server stats, storage, dashboard
 Requires at least: 5.8
 Tested up to: 6.9
-Stable Tag: 1.3
+Stable Tag: 1.4.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

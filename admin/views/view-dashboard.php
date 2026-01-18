@@ -23,6 +23,8 @@ if ( ! did_action( 'add_meta_boxes' ) ) {
 ?>
 
 <div class="metabox-holder" id="dashboard-widgets">
+    <?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
+    <?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
     <div class="postbox-container" style="width:49%; display:inline-block; vertical-align:top;">
         <?php do_meta_boxes( 'toplevel_page_my-tiny-stats', 'normal', null ); ?>
     </div>

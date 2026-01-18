@@ -20,7 +20,9 @@ try {
     $base_url = admin_url( 'admin.php?page=my-tiny-stats&view_mode=modern' );
 
 } catch ( Throwable $e ) {
-    echo '<div class="notice notice-error"><p>' . sprintf( __( 'Essential Data Error: %s', 'my-tiny-stats' ), esc_html( $e->getMessage() ) ) . '</p></div>';
+    /* translators: %s: Error message */
+
+    echo '<div class="notice notice-error"><p>' . sprintf( esc_html__( 'Essential Data Error: %s', 'my-tiny-stats' ), esc_html( $e->getMessage() ) ) . '</p></div>';
     // Fallback data to prevent undefined variable errors below
     $scan_results = [];
     $db_stats = [];
@@ -68,7 +70,7 @@ try {
             );
             foreach ( $tabs as $k => $label ) {
                 $cls = ( $active_tab === $k ) ? 'active' : '';
-                echo '<a href="' . esc_url( add_query_arg( 'tab', $k, $base_url ) ) . '" class="mtdss-modern-tab ' . $cls . '">' . esc_html( $label ) . '</a>';
+                echo '<a href="' . esc_url( add_query_arg( 'tab', $k, $base_url ) ) . '" class="mtdss-modern-tab ' . esc_attr( $cls ) . '">' . esc_html( $label ) . '</a>';
             }
             ?>
         </div>
@@ -83,21 +85,21 @@ try {
                 <!-- Card 1 -->
                 <div style="border: 1px solid #e2e4e7; padding: 20px; border-radius: 6px;">
                     <h3 style="margin-top: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php esc_html_e( 'Total Disk Usage', 'my-tiny-stats' ); ?></h3>
-                    <p style="font-size: 24px; font-weight: 300; margin: 10px 0; color: #1d2327;"><?php echo size_format( $used_space ); ?> <span style="font-size: 14px; color: #8c8f94;">/ <?php echo size_format( $total_space ); ?></span></p>
-                    <div style="height: 4px; background: #f0f0f1; width: 100%; border-radius: 2px;"><div style="height: 100%; background: #2271b1; width: <?php echo $used_pct; ?>%;"></div></div>
+                    <p style="font-size: 24px; font-weight: 300; margin: 10px 0; color: #1d2327;"><?php echo esc_html( size_format( $used_space ) ); ?> <span style="font-size: 14px; color: #8c8f94;">/ <?php echo esc_html( size_format( $total_space ) ); ?></span></p>
+                    <div style="height: 4px; background: #f0f0f1; width: 100%; border-radius: 2px;"><div style="height: 100%; background: #2271b1; width: <?php echo esc_attr( $used_pct ); ?>%;"></div></div>
                 </div>
                 <!-- Card 2 -->
                 <div style="border: 1px solid #e2e4e7; padding: 20px; border-radius: 6px;">
                     <h3 style="margin-top: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php esc_html_e( 'Database Size', 'my-tiny-stats' ); ?></h3>
                     <?php $db_total = array_sum( array_column( $db_stats, 'size' ) ); ?>
-                    <p style="font-size: 24px; font-weight: 300; margin: 10px 0; color: #1d2327;"><?php echo size_format( $db_total ); ?></p>
+                    <p style="font-size: 24px; font-weight: 300; margin: 10px 0; color: #1d2327;"><?php echo esc_html( size_format( $db_total ) ); ?></p>
                     <p style="margin: 0; font-size: 13px; color: #2271b1; cursor: pointer;">View Tables &rarr;</p>
                 </div>
                 <!-- Card 3 -->
                 <div style="border: 1px solid #e2e4e7; padding: 20px; border-radius: 6px; <?php echo $suspicious_count > 0 ? 'background: #fdfafa; border-color: #d63638;' : ''; ?>">
                     <h3 style="margin-top: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php esc_html_e( 'Security Status', 'my-tiny-stats' ); ?></h3>
                     <p style="font-size: 24px; font-weight: 300; margin: 10px 0; color: <?php echo $suspicious_count > 0 ? '#d63638' : '#00a32a'; ?>">
-                        <?php echo $suspicious_count > 0 ? $suspicious_count . ' ' . __( 'Issues', 'my-tiny-stats' ) : __( 'Secure', 'my-tiny-stats' ); ?>
+                        <?php echo $suspicious_count > 0 ? esc_html( $suspicious_count ) . ' ' . esc_html__( 'Issues', 'my-tiny-stats' ) : esc_html__( 'Secure', 'my-tiny-stats' ); ?>
                     </p>
                     <?php if ( $suspicious_count > 0 ) : ?>
                         <a href="<?php echo esc_url( add_query_arg( 'tab', 'security', $base_url ) ); ?>" style="font-size: 13px; color: #d63638;"><?php esc_html_e( 'Review Risks', 'my-tiny-stats' ); ?> &rarr;</a>
@@ -127,7 +129,7 @@ try {
                                     <div style="color: #8c8f94; font-size: 11px;"><?php echo esc_html( basename( dirname( $f['path'] ) ) ); ?></div>
                                 </td>
                                 <td style="text-align: right; padding: 10px 15px; color: #646970;">
-                                    <?php echo size_format( $f['size'] ); ?>
+                                    <?php echo esc_html( size_format( $f['size'] ) ); ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -157,7 +159,7 @@ try {
                                     </div>
                                 </td>
                                 <td style="text-align: right; padding: 10px 15px; color: #646970;">
-                                    <?php echo size_format( $f['size'] ); ?>
+                                    <?php echo esc_html( size_format( $f['size'] ) ); ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -178,6 +180,8 @@ try {
             $recent_days = (int) MTDSS_Settings::get_config( 'recent_days', 7 );
             ?>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <!-- translators: %d: number of days -->
+
                 <h2 style="font-size: 18px; margin: 0; font-weight: 500; color: #1d2327;"><?php printf( esc_html__( 'Changes in last %d days', 'my-tiny-stats' ), $recent_days ); ?></h2>
             </div>
 
@@ -203,8 +207,8 @@ try {
                     <?php foreach ( array_slice( $recent_files, 0, 100 ) as $file ) : ?>
                         <tr>
                             <td><strong style="color:#2271b1;"><?php echo esc_html( $file['name'] ); ?></strong><div style="font-size:12px; color:#646970;"><?php echo esc_html( str_replace( $upload_dir['basedir'], '', $file['path'] ) ); ?></div></td>
-                            <td><?php echo date( 'Y-m-d H:i', $file['date'] ); ?></td>
-                            <td><?php echo size_format( $file['size'], 2 ); ?></td>
+                            <td><?php echo esc_html( date_i18n( 'Y-m-d H:i', $file['date'] ) ); ?></td>
+                            <td><?php echo esc_html( size_format( $file['size'], 2 ) ); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -224,8 +228,8 @@ try {
                         <tr>
                             <td><strong><?php echo esc_html( $f['name'] ); ?></strong></td>
                             <td style="font-size: 12px; color: #8c8f94; word-break: break-all;"><?php echo esc_html( str_replace( $upload_dir['basedir'], '...', $f['path'] ) ); ?></td>
-                            <td><?php echo size_format( $f['size'] ); ?></td>
-                            <td style="text-align:right; color: #8c8f94;"><?php echo date_i18n( get_option('date_format'), $f['date'] ); ?></td>
+                            <td><?php echo esc_html( size_format( $f['size'] ) ); ?></td>
+                            <td style="text-align:right; color: #8c8f94;"><?php echo esc_html( date_i18n( get_option('date_format'), $f['date'] ) ); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -244,7 +248,7 @@ try {
                         <tr>
                             <td><strong style="color: #d63638;"><?php echo esc_html( $f['name'] ); ?></strong><br><span style="font-size: 11px; color: #8c8f94;"><?php echo esc_html( $f['path'] ); ?></span></td>
                             <td><span class="mtdss-modern-badge mtdss-badge-red"><?php echo esc_html( $f['reason'] ); ?></span></td>
-                            <td><?php echo size_format( $f['size'] ); ?></td>
+                            <td><?php echo esc_html( size_format( $f['size'] ) ); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

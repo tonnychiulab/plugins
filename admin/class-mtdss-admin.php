@@ -115,7 +115,7 @@ class MTDSS_Admin {
                          );
                          foreach($modes as $key => $m) {
                              $active = ($view_mode === $key) ? 'color: #2271b1; background: #f0f0f1;' : 'color: #50575e;';
-                             echo '<a href="' . esc_url( add_query_arg('view_mode', $key, $base_url) ) . '" class="mtdss-view-btn tips" title="' . esc_attr($m['label']) . '" style="text-decoration:none; padding: 5px 8px; border-radius: 4px; ' . $active . '"><span class="dashicons ' . $m['icon'] . '"></span></a>';
+                             echo '<a href="' . esc_url( add_query_arg('view_mode', $key, $base_url) ) . '" class="mtdss-view-btn tips" title="' . esc_attr($m['label']) . '" style="text-decoration:none; padding: 5px 8px; border-radius: 4px; ' . esc_attr( $active ) . '"><span class="dashicons ' . esc_attr( $m['icon'] ) . '"></span></a>';
                          }
                          ?>
                     </div>
@@ -158,6 +158,8 @@ class MTDSS_Admin {
 
     private function handle_requests() {
         // Refresh
+        $this->ensure_default_layout();
+
         if ( isset( $_POST['mtdss_refresh'] ) && check_admin_referer( 'mtdss_refresh_action', 'mtdss_refresh_nonce' ) && current_user_can( 'manage_options' ) ) {
             MTDSS_Settings::clear_transients();
             add_settings_error( 'mtdss_messages', 'mtdss_message', __( 'Stats refreshed successfully.', 'my-tiny-stats' ), 'updated' );
@@ -187,13 +189,31 @@ class MTDSS_Admin {
 
 
     /**
+     * Ensure Default Layout
+     */
+    private function ensure_default_layout() {
+        $user_id = get_current_user_id();
+        $option_key = 'meta-box-order_toplevel_page_my-tiny-stats';
+        $layout = get_user_option( $option_key, $user_id );
+
+        if ( ! $layout ) {
+            $default_layout = array(
+                'normal' => 'mtdss_disk_usage,mtdss_large_files,mtdss_recent_files',
+                'side'   => 'mtdss_security,mtdss_db_usage',
+                'advanced' => '',
+            );
+            update_user_option( $user_id, $option_key, $default_layout, true );
+        }
+    }
+
+    /**
      * Register Dashboard Widgets
      */
     public function register_dashboard_widgets() {
         add_meta_box( 'mtdss_disk_usage', __( 'Total Disk Usage', 'my-tiny-stats' ), array( $this, 'widget_disk_usage' ), 'toplevel_page_my-tiny-stats', 'normal' );
         add_meta_box( 'mtdss_db_usage', __( 'Database Size', 'my-tiny-stats' ), array( $this, 'widget_db_usage' ), 'toplevel_page_my-tiny-stats', 'side' );
         add_meta_box( 'mtdss_large_files', __( 'Large Files', 'my-tiny-stats' ), array( $this, 'widget_large_files' ), 'toplevel_page_my-tiny-stats', 'normal' );
-        add_meta_box( 'mtdss_recent_files', __( 'Recent Files', 'my-tiny-stats' ), array( $this, 'widget_recent_files' ), 'toplevel_page_my-tiny-stats', 'side' );
+        add_meta_box( 'mtdss_recent_files', __( 'Recent Files', 'my-tiny-stats' ), array( $this, 'widget_recent_files' ), 'toplevel_page_my-tiny-stats', 'normal' );
         add_meta_box( 'mtdss_security', __( 'Security Status', 'my-tiny-stats' ), array( $this, 'widget_security_status' ), 'toplevel_page_my-tiny-stats', 'side' );
     }
 
@@ -203,9 +223,9 @@ class MTDSS_Admin {
         if ( ! $stats ) { echo 'N/A'; return; }
         ?>
         <div style="text-align:center; padding:10px;">
-            <h2 style="font-size:32px; margin:0; font-weight:300;"><?php echo size_format($stats['used']); ?> <span style="font-size:14px; color:#888;">/ <?php echo size_format($stats['total']); ?></span></h2>
+            <h2 style="font-size:32px; margin:0; font-weight:300;"><?php echo esc_html( size_format($stats['used']) ); ?> <span style="font-size:14px; color:#888;">/ <?php echo esc_html( size_format($stats['total']) ); ?></span></h2>
             <div style="background:#f0f0f1; border-radius:4px; margin-top:10px; height:20px; text-align:center; color:#fff; line-height:20px; overflow:hidden;">
-                 <div style="background:#2271b1; width:<?php echo $stats['pct']; ?>%; height:100%;"><?php echo $stats['pct']; ?>%</div>
+                 <div style="background:#2271b1; width:<?php echo esc_attr( $stats['pct'] ); ?>%; height:100%;"><?php echo esc_html( $stats['pct'] ); ?>%</div>
             </div>
         </div>
         <?php
@@ -218,7 +238,7 @@ class MTDSS_Admin {
         echo '<div style="margin-bottom:10px; font-size:14px;"><strong>' . __( 'Total Size:', 'my-tiny-stats' ) . '</strong> ' . size_format($total) . '</div>';
         echo '<table class="widefat striped">';
         foreach($stats as $t) {
-            echo '<tr><td>' . esc_html($t['name']) . '</td><td style="text-align:right;">' . size_format($t['size']) . '</td></tr>';
+            echo '<tr><td>' . esc_html($t['name']) . '</td><td style="text-align:right;">' . esc_html( size_format($t['size']) ) . '</td></tr>';
         }
         echo '</table>';
     }
@@ -233,7 +253,7 @@ class MTDSS_Admin {
         foreach($files as $f) {
             echo '<tr>';
             echo '<td style="word-break:break-all;"><strong>' . esc_html($f['name']) . '</strong><br><span style="color:#888;">' . esc_html($f['path']) . '</span></td>';
-            echo '<td style="width:80px; text-align:right;">' . size_format($f['size']) . '</td>';
+            echo '<td style="width:80px; text-align:right;">' . esc_html( size_format($f['size']) ) . '</td>';
             echo '</tr>';
         }
         echo '</table>';
@@ -250,7 +270,8 @@ class MTDSS_Admin {
         $stats = $data['recent_stats'] ?? [];
         $days = (int) MTDSS_Settings::get_config( 'recent_days', 7 );
         
-        echo '<p><strong>' . sprintf( __( 'Files modified in the last %d days:', 'my-tiny-stats' ), $days ) . '</strong></p>';
+        /* translators: %d: number of days */
+        echo '<p><strong>' . sprintf( esc_html__( 'Files modified in the last %d days:', 'my-tiny-stats' ), $days ) . '</strong></p>';
         
         if ( !empty($stats) ) {
             echo '<div style="margin-bottom:10px;">';
@@ -267,8 +288,8 @@ class MTDSS_Admin {
             echo '<div style="max-height:250px; overflow-y:auto;"><ul style="list-style:none; margin:0; padding:0;">';
             foreach(array_slice($recent, 0, 20) as $f) {
                 echo '<li style="border-bottom:1px solid #f0f0f1; padding:5px 0;">';
-                echo '<span style="color:#2271b1;">' . esc_html($f['name']) . '</span> <span style="color:#888; font-size:12px;">(' . size_format($f['size']) . ')</span>';
-                echo '<div style="font-size:11px; color:#aaa;">' . date('Y-m-d H:i', $f['date']) . '</div>';
+                echo '<span style="color:#2271b1;">' . esc_html($f['name']) . '</span> <span style="color:#888; font-size:12px;">(' . esc_html( size_format($f['size']) ) . ')</span>';
+                echo '<div style="font-size:11px; color:#aaa;">' . esc_html( date_i18n('Y-m-d H:i', $f['date']) ) . '</div>';
                 echo '</li>';
             }
             echo '</ul></div>';
@@ -281,10 +302,11 @@ class MTDSS_Admin {
         $suspicious = $data['suspicious_files'] ?? [];
         
         if ( empty($suspicious) ) {
-            echo '<div style="color:#00a32a; font-weight:500; padding:10px 0;"><span class="dashicons dashicons-yes-alt"></span> ' . __( 'System appears clean.', 'my-tiny-stats' ) . '</div>';
+            echo '<div style="color:#00a32a; font-weight:500; padding:10px 0;"><span class="dashicons dashicons-yes-alt"></span> ' . esc_html__( 'System appears clean.', 'my-tiny-stats' ) . '</div>';
         } else {
             echo '<div style="background:#fff8e5; border-left:4px solid #f0b849; padding:8px 12px; margin-bottom:10px;">';
-            echo sprintf( __( '%d potential issues found.', 'my-tiny-stats' ), count($suspicious) );
+            /* translators: %d: number of issues found */
+            echo sprintf( esc_html__( '%d potential issues found.', 'my-tiny-stats' ), count($suspicious) );
             echo '</div>';
             echo '<ul style="margin:0; padding:0; list-style:none;">';
             foreach($suspicious as $f) {
